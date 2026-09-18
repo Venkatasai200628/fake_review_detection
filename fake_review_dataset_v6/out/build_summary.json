@@ -1,0 +1,98 @@
+{
+  "seed": 20260919,
+  "root_photos_used": 826,
+  "root_photos_skipped_small": [
+    "backpack/istockphoto-1016641270-612x612.jpg",
+    "backpack/istockphoto-2264459972-612x612.jpg",
+    "backpack/photo-1543325692-6b03e28e7e99.avif",
+    "backpack/photo-1580087256562-917c37dc8f88.avif",
+    "backpack/photo-1621624959365-071359461b94.avif",
+    "backpack/photo-1622560480605-d83c853bc5c3.avif",
+    "backpack/premium_photo-1664110691115-790e20a41744.avif",
+    "backpack/premium_photo-1723649902596-607223a3df2a.avif",
+    "backpack/premium_photo-1723649902616-0dce94980e06.avif",
+    "backpack/premium_photo-1723649902734-60ec42167731.avif"
+  ],
+  "rows_total": 3348,
+  "rows_balanced": 3300,
+  "genuine": 1650,
+  "fake": 1650,
+  "needs_verification": 48,
+  "fraud_type_counts": {
+    "genuine": 1650,
+    "text_deception": 555,
+    "visual_manipulation": 555,
+    "coordinated_reuse": 540
+  },
+  "train_rows": 2490,
+  "train_fake_pct": 50.0,
+  "test_rows": 810,
+  "test_fake_pct": 50.0,
+  "holdout_rows": 474,
+  "holdout_fake_pct": 14.56,
+  "train_roots": 616,
+  "test_roots": 210,
+  "campaigns": 105,
+  "per_category": {
+    "Bluetooth speaker": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "Handbags": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "Knifes": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "Office cair": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "Phone case": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "Shoes": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "Sunglasses": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "Watches": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "Water bottle": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "Wireless_Earbuds": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "Yoga mat": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "backpack": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "mouse": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "skincare set": {
+      "Fake": 110,
+      "Genuine": 110
+    },
+    "suitcases": {
+      "Fake": 110,
+      "Genuine": 110
+    }
+  }
+}

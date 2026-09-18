@@ -1,0 +1,26 @@
+3348 rows, 3348 images
+all image files present
+placeholder embeddings backed up -> embeddings_backup_placeholder.csv
+[clip] open_clip ViT-B-32 laion2b on cpu
+  320/3348  126s  (eta 1191s)
+  640/3348  181s  (eta 766s)
+  960/3348  226s  (eta 562s)
+  1280/3348  267s  (eta 431s)
+  1600/3348  312s  (eta 341s)
+  1920/3348  339s  (eta 252s)
+  2240/3348  363s  (eta 179s)
+  2560/3348  389s  (eta 120s)
+  2880/3348  417s  (eta 68s)
+  3200/3348  443s  (eta 20s)
+image encoding done in 453s
+text encoding done in 167s
+  cross-modal similarity: mean=0.205 min=0.059 max=0.353
+  reviews_full.csv: 3348 rows updated
+  reviews_balanced.csv: 3300 rows updated
+  train.csv: 2490 rows updated
+  test_balanced.csv: 810 rows updated
+  holdout_realistic.csv: 474 rows updated
+  needs_verification_controls.csv: 48 rows updated
+
+embeddings are now 512-d CLIP.
+NEXT: python tune_thresholds.py   (COSINE_REUSE_THRESHOLD=0.94 was tuned for the placeholder and will be wrong for CLIP)

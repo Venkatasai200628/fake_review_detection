@@ -1,0 +1,34 @@
+corpus=3300  fraud=1650 (50.0%)  roots=826  features=38
+protocol: 5x5 grouped CV, test folds thinned to 15% prevalence
+
+  repeat 1/5 done
+  repeat 2/5 done
+  repeat 3/5 done
+  repeat 4/5 done
+  repeat 5/5 done
+
+=== 5x5 GROUPED CV (Random Forest), mean +/- 95% CI ===
+               config         PR-AUC        ROC-AUC             F1      Precision         Recall
+            text-only 0.740 +/-0.017 0.873 +/-0.010 0.604 +/-0.022 0.577 +/-0.032 0.641 +/-0.022
+  image-forensic-only 0.557 +/-0.020 0.740 +/-0.015 0.440 +/-0.017 0.382 +/-0.017 0.521 +/-0.024
+       behaviour-only 0.401 +/-0.021 0.767 +/-0.011 0.406 +/-0.011 0.279 +/-0.008 0.751 +/-0.019
+           graph-only 0.243 +/-0.017 0.597 +/-0.018 0.278 +/-0.013 0.186 +/-0.009 0.551 +/-0.027
+base-paper-equivalent 0.801 +/-0.014 0.931 +/-0.006 0.580 +/-0.014 0.444 +/-0.013 0.838 +/-0.019
+        FUSION (ours) 0.841 +/-0.012 0.945 +/-0.005 0.644 +/-0.013 0.517 +/-0.015 0.855 +/-0.011
+
+=== PER-FRAUD-TYPE DETECTION RATE (mean across folds) ===
+                       visual_manipulation  text_deception  coordinated_reuse
+text-only                            0.152           0.792              1.000
+image-forensic-only                  0.432           0.164              1.000
+behaviour-only                       0.782           0.653              0.826
+graph-only                           0.431           0.376              0.863
+base-paper-equivalent                0.592           0.934              1.000
+FUSION (ours)                        0.721           0.853              1.000
+
+=== PAIRED COMPARISON: fusion vs base-paper-equivalent ===
+  fusion PR-AUC        0.841
+  base-equivalent      0.801
+  paired difference    +0.040 (95% CI +0.030 to +0.050)
+  paired t-test        t=7.73  p=5.717e-08  n=25 folds
+  fusion wins in       24/25 folds
+  verdict: SIGNIFICANT -- the gap survives cross-validation

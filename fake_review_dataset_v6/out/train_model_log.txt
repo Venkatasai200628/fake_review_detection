@@ -1,0 +1,41 @@
+trained on 2490 rows, 39 features
+
+=== FINAL MODEL on unseen root photos (threshold 0.5) ===
+                          set  rows  fake_pct  PR-AUC  ROC-AUC    F1  Precision  Recall  TN  FP  FN  TP
+     test_balanced (50% fake)   810      50.0   0.952    0.946 0.852      0.850   0.854 344  61  59 346
+holdout_realistic (~15% fake)   474      14.6   0.843    0.950 0.610      0.483   0.826 344  61  12  57
+
+=== share flagged as Fake, by fraud_type (test_balanced) ===
+fraud_type
+coordinated_reuse      1.000
+genuine                0.151
+text_deception         0.867
+visual_manipulation    0.696
+
+=== three-way decision (Genuine < 0.35 <= Needs_Verification <= 0.65 < Fake), test_balanced ===
+decision  Fake  Genuine  Needs_Verification
+label                                      
+Fake       294       21                  90
+Genuine     15      292                  98
+
+=== Needs_Verification controls -> model decision ===
+decision                    Fake  Genuine  Needs_Verification
+fraud_type                                                   
+borderline_ambiguous_reuse     1       16                   7
+borderline_recompress          0       17                   7
+
+legit stock reuse (must NOT be flagged): 3/12 flagged
+
+=== top 10 features ===
+txt_generic_ratio      0.1132
+beh_rating             0.1067
+txt_len                0.0884
+txt_sent_count         0.0588
+beh_is_extreme         0.0502
+img_reuse_in_burst     0.0502
+img_max_cosine         0.0443
+txt_exact_dup_count    0.0391
+img_burst_ratio        0.0356
+txt_specific_ratio     0.0319
+
+saved ../out/model/fusion_rf.joblib

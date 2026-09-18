@@ -1,0 +1,72 @@
+rows=3348  images=3348  roots_used=826  categories=15
+
+=== label distribution ===
+label
+Fake                  1650
+Genuine               1650
+Needs_Verification      48
+
+=== fraud_type distribution ===
+fraud_type
+genuine                       1650
+text_deception                 555
+visual_manipulation            555
+coordinated_reuse              540
+borderline_recompress           24
+borderline_ambiguous_reuse      24
+
+=== 1. pHash separation: same-root reuse vs unrelated ===
+  same root      n= 4514  mean=  7.9  p95=  18  max=30
+  different root n= 3996  mean= 31.4  p5=  24   min=14
+  margin (diff p5 - same p95) = 6  CLEAN
+
+=== 2. Embedding cosine separation ===
+  same root      mean=0.984  p5=0.954
+  different root mean=0.768  p95=0.918
+
+=== 3. Manipulation score vs threshold (0.25) ===
+  genuine                  n=1650  mean=0.064  range=[0.010,0.120]
+  visual_manipulation      n=555  mean=0.823  range=[0.651,0.968]
+  text_deception           n=555  mean=0.066  range=[0.010,0.120]
+  coordinated_reuse        n=540  mean=0.085  range=[0.020,0.150]
+  borderline_recompress    n= 24  mean=0.134  range=[0.050,0.200]
+
+=== 4. Negative controls ===
+  legit_stock_reuse                          n=32  labels={'Genuine': np.int64(32)}
+  recompress_only_below_threshold            n=24  labels={'Needs_Verification': np.int64(24)}
+  weak_reuse_not_campaign                    n=24  labels={'Needs_Verification': np.int64(24)}
+  recompress-only rows above threshold: 0  OK
+  legit stock reuse all labelled Genuine: OK  (shares root with 37 rows total)
+
+=== 5. Campaign integrity (burst timing) ===
+  campaigns=105  members=540  max span=2.95h  (design target <=3h)
+  genuine posting spread: 180 days
+
+=== 6. Rating skew ===
+rating                        1    2   3    4    5
+fraud_type                                        
+borderline_ambiguous_reuse    5    3   1    6    9
+borderline_recompress         4    5   1    6    8
+coordinated_reuse             0    0   0   55  485
+genuine                     189  168  79  497  717
+text_deception               58   12   0   37  448
+visual_manipulation           0    0   0   37  518
+
+=== 7. Text specificity gap (proxy: distinct-token ratio) ===
+  genuine              unique_text_ratio=0.78  mean_len=19.0 words
+  text_deception       unique_text_ratio=0.31  mean_len=14.2 words
+  coordinated_reuse    unique_text_ratio=0.14  mean_len=12.9 words
+
+=== 8. Split integrity ===
+  train         2490 rows, fraud 50.0%
+  test_balanced 810 rows, fraud 50.0%
+  holdout       474 rows, fraud 14.6%
+  root overlap train/test: 0 (must be 0)  OK
+  categories in train 15, test 15
+
+=== 9. Balance (v6) ===
+  overall   Genuine=1650  Fake=1650  OK
+  train per-category Genuine==Fake in all 15 categories: OK
+  test  per-category Genuine==Fake in all 15 categories: OK
+  roots used by BOTH Genuine and Fake rows: 824/826 (100%)
+  fraud_type split of the Fake half: {'text_deception': 555, 'visual_manipulation': 555, 'coordinated_reuse': 540}

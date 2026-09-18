@@ -1,0 +1,7 @@
+,visual_manipulation,text_deception,coordinated_reuse
+text-only,0.152,0.792,1.0
+image-forensic-only,0.431,0.188,1.0
+behaviour-only,0.782,0.653,0.826
+graph-only,0.431,0.376,0.863
+base-paper-equivalent,0.592,0.934,1.0
+FUSION (ours),0.71,0.864,1.0
