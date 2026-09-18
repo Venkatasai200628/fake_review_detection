@@ -28,8 +28,11 @@ python build_dataset.py      # rebuilds out/ (same seed, same result)
 python run_forensics.py
 python recompute_embeddings.py
 python validate.py
-python crossval.py           # fusion PR-AUC 0.843 vs base-paper-equivalent 0.801 (p = 3e-08)
-python train_model.py
+python forensic_maps.py       # 128x128 ELA/noise maps (not in git: 330 MB, rebuilt in ~2 min)
+python cnn_forensics.py       # forensic CNN (~2.5 h on CPU)
+python crossval.py            # fusion PR-AUC 0.863 vs base-paper-equivalent 0.729 (p = 5e-14)
+python train_model.py         # final model: holdout PR-AUC 0.918
+python modality_ablation.py   # text-only / image-only / text+image / ... table
 ```
 
 The reviews are **constructed** around real photos, so the results describe a controlled test, not live platform performance.

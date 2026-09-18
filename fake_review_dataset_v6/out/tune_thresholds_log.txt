@@ -1,23 +1,23 @@
 3348 embeddings, dim=512, source=clip_image_embeddings.npy
 
-same-root pairs      n=   6331  mean=0.945  p5=0.870
-different-root pairs n= 400000  mean=0.385  p95=0.562
-p5(same) - p95(diff) = +0.309   CLEAN
+same-root pairs      n=   6335  mean=0.944  p5=0.867
+different-root pairs n= 400000  mean=0.386  p95=0.562
+p5(same) - p95(diff) = +0.305   CLEAN
 
  threshold     TPR      FPR       J
-     0.689   0.999   0.0106   0.988
-     0.704   0.998   0.0085   0.990
-     0.719   0.998   0.0066   0.991
-     0.734   0.997   0.0052   0.992
-     0.749   0.997   0.0039   0.993
-     0.764   0.995   0.0029   0.992
-     0.779   0.993   0.0020   0.991
-     0.794   0.990   0.0014   0.989
-     0.809   0.987   0.0010   0.986
+     0.700   0.997   0.0088   0.988
+     0.715   0.996   0.0071   0.989
+     0.730   0.996   0.0055   0.991
+     0.745   0.996   0.0043   0.991
+     0.760   0.995   0.0032   0.991
+     0.775   0.993   0.0023   0.991
+     0.790   0.991   0.0016   0.990
+     0.805   0.988   0.0011   0.987
+     0.820   0.984   0.0007   0.983
 
 RECOMMENDED
-  max Youden's J : COSINE_REUSE_THRESHOLD = 0.749  (TPR 0.997, FPR 0.0039)
-  at 1% FPR      : COSINE_REUSE_THRESHOLD = 0.693  (TPR 0.999, FPR 0.0099)   <-- safer for provenance
+  max Youden's J : COSINE_REUSE_THRESHOLD = 0.760  (TPR 0.995, FPR 0.0032)
+  at 1% FPR      : COSINE_REUSE_THRESHOLD = 0.693  (TPR 0.997, FPR 0.0097)   <-- safer for provenance
 
 Edit features.py:  COSINE_REUSE_THRESHOLD = 0.693
 Then: python crossval.py   and compare against PR-AUC 0.818 +/- 0.022

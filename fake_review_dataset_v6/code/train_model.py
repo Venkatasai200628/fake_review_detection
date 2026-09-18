@@ -60,6 +60,8 @@ def report(name, y, p):
 
 
 def main():
+    # CNN image score trained on TRAIN roots only -> test numbers stay clean
+    F.CNN_SCORES_CSV = f'{OUT}/cnn_manip_scores_split.csv'
     full = pd.read_csv(f'{OUT}/reviews_full.csv')
     blocks = F.build_all(full)
     X = pd.concat(blocks.values(), axis=1)
@@ -118,6 +120,16 @@ def main():
 
     os.makedirs(MODEL_DIR, exist_ok=True)
     joblib.dump(model, f'{MODEL_DIR}/fusion_rf.joblib', compress=3)
+
+    # text-only and image-only models: the extension shows their scores next
+    # to the fusion decision, so the user sees WHY a review was flagged
+    for name, blk in [('text', 'TEXT'), ('image', 'IMAGE')]:
+        c = list(blocks[blk].columns)
+        m = RandomForestClassifier(n_estimators=300, min_samples_leaf=2,
+                                   class_weight='balanced', n_jobs=-1,
+                                   random_state=SEED)
+        m.fit(X.loc[train_ids, c].values, train_ids.map(y_of).values)
+        joblib.dump(m, f'{MODEL_DIR}/{name}_rf.joblib', compress=3)
     with open(f'{MODEL_DIR}/model_meta.json', 'w') as f:
         json.dump({
             'model': 'RandomForestClassifier(n_estimators=500, min_samples_leaf=2, '

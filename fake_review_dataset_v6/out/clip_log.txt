@@ -2,19 +2,19 @@
 all image files present
 placeholder embeddings backed up -> embeddings_backup_placeholder.csv
 [clip] open_clip ViT-B-32 laion2b on cpu
-  320/3348  126s  (eta 1191s)
-  640/3348  181s  (eta 766s)
-  960/3348  226s  (eta 562s)
-  1280/3348  267s  (eta 431s)
-  1600/3348  312s  (eta 341s)
-  1920/3348  339s  (eta 252s)
-  2240/3348  363s  (eta 179s)
-  2560/3348  389s  (eta 120s)
-  2880/3348  417s  (eta 68s)
-  3200/3348  443s  (eta 20s)
-image encoding done in 453s
-text encoding done in 167s
-  cross-modal similarity: mean=0.205 min=0.059 max=0.353
+  320/3348  83s  (eta 788s)
+  640/3348  118s  (eta 501s)
+  960/3348  154s  (eta 383s)
+  1280/3348  182s  (eta 294s)
+  1600/3348  206s  (eta 225s)
+  1920/3348  232s  (eta 172s)
+  2240/3348  259s  (eta 128s)
+  2560/3348  290s  (eta 89s)
+  2880/3348  316s  (eta 51s)
+  3200/3348  342s  (eta 16s)
+image encoding done in 351s
+text encoding done in 169s
+  cross-modal similarity: mean=0.205 min=0.035 max=0.332
   reviews_full.csv: 3348 rows updated
   reviews_balanced.csv: 3300 rows updated
   train.csv: 2490 rows updated

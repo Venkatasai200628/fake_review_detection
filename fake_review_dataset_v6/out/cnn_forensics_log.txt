@@ -1,0 +1,19 @@
+3348 photos, 555 edited; maps (3348, 3, 128, 128)
+
+[A] cross-fitted, all rows (4715s)
+  CNN on forensic maps               ROC-AUC 0.884   AP 0.715
+      copy_move  vs clean photos   ROC-AUC 0.786  (n=166)
+      splice     vs clean photos   ROC-AUC 0.894  (n=195)
+      noise      vs clean photos   ROC-AUC 0.957  (n=194)
+  13 hand-made ELA/noise numbers     ROC-AUC 0.635   AP 0.296
+      copy_move  vs clean photos   ROC-AUC 0.499  (n=166)
+      splice     vs clean photos   ROC-AUC 0.630  (n=195)
+      noise      vs clean photos   ROC-AUC 0.757  (n=194)
+
+[B] trained on train roots only, scored on unseen test roots (9096s)
+  CNN, test photos                   ROC-AUC 0.959   AP 0.896
+      copy_move  vs clean photos   ROC-AUC 0.912  (n=37)
+      splice     vs clean photos   ROC-AUC 0.981  (n=50)
+      noise      vs clean photos   ROC-AUC 0.972  (n=48)
+
+saved cnn_manip_scores.csv, cnn_manip_scores_split.csv, model/forensic_cnn.pt

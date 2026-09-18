@@ -32,6 +32,7 @@
     "cm_pairs",
     "cm_best_sim",
     "clip_cross_modal",
+    "img_cnn_manip",
     "beh_rating",
     "beh_is_extreme",
     "beh_reviewer_count",
@@ -75,7 +76,8 @@
       "noise_hot_frac",
       "cm_pairs",
       "cm_best_sim",
-      "clip_cross_modal"
+      "clip_cross_modal",
+      "img_cnn_manip"
     ],
     "BEHAVIOUR": [
       "beh_rating",
@@ -102,35 +104,35 @@
       "set": "test_balanced (50% fake)",
       "rows": 810,
       "fake_pct": 50.0,
-      "PR-AUC": 0.952,
-      "ROC-AUC": 0.946,
-      "F1": 0.852,
-      "Precision": 0.85,
-      "Recall": 0.854,
-      "TN": 344,
-      "FP": 61,
-      "FN": 59,
-      "TP": 346
+      "PR-AUC": 0.964,
+      "ROC-AUC": 0.948,
+      "F1": 0.903,
+      "Precision": 0.961,
+      "Recall": 0.852,
+      "TN": 391,
+      "FP": 14,
+      "FN": 60,
+      "TP": 345
     },
     {
       "set": "holdout_realistic (~15% fake)",
       "rows": 474,
       "fake_pct": 14.6,
-      "PR-AUC": 0.843,
-      "ROC-AUC": 0.95,
-      "F1": 0.61,
-      "Precision": 0.483,
-      "Recall": 0.826,
-      "TN": 344,
-      "FP": 61,
-      "FN": 12,
-      "TP": 57
+      "PR-AUC": 0.918,
+      "ROC-AUC": 0.957,
+      "F1": 0.847,
+      "Precision": 0.813,
+      "Recall": 0.884,
+      "TN": 391,
+      "FP": 14,
+      "FN": 8,
+      "TP": 61
     }
   ],
   "per_fraud_type_flag_rate": {
     "coordinated_reuse": 1.0,
-    "genuine": 0.151,
-    "text_deception": 0.867,
-    "visual_manipulation": 0.696
+    "genuine": 0.035,
+    "text_deception": 0.748,
+    "visual_manipulation": 0.807
   }
 }

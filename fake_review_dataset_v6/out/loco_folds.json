@@ -4,41 +4,41 @@
     {
       "fold": 1,
       "held_out_categories": [
-        "Bluetooth speaker",
-        "Office cair",
-        "Phone case"
+        "skincare set",
+        "suitcases",
+        "Yoga mat"
       ]
     },
     {
       "fold": 2,
       "held_out_categories": [
-        "Handbags",
-        "Knifes",
+        "mouse",
+        "Office cair",
         "Watches"
       ]
     },
     {
       "fold": 3,
       "held_out_categories": [
+        "Handbags",
         "Wireless_Earbuds",
-        "Sunglasses",
-        "Water bottle"
+        "Bluetooth speaker"
       ]
     },
     {
       "fold": 4,
       "held_out_categories": [
-        "mouse",
-        "skincare set",
-        "backpack"
+        "Water bottle",
+        "Sunglasses",
+        "Shoes"
       ]
     },
     {
       "fold": 5,
       "held_out_categories": [
-        "Yoga mat",
-        "Shoes",
-        "suitcases"
+        "Phone case",
+        "Knifes",
+        "backpack"
       ]
     }
   ]

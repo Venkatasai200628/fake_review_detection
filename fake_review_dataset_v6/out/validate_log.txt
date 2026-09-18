@@ -1,0 +1,74 @@
+D:\sem-5 projects\computer vision\dataset\fake_review_dataset_v6\code\validate.py:77: UserWarning: Could not infer format, so each element will be parsed individually, falling back to `dateutil`. To ensure parsing is consistent and as-expected, please specify a format.
+  t = pd.to_datetime(g.timestamp)
+rows=3348  images=3348  roots_used=826  categories=15
+
+=== label distribution ===
+label
+Fake                  1650
+Genuine               1650
+Needs_Verification      48
+
+=== fraud_type distribution ===
+fraud_type
+genuine                       1650
+text_deception                 555
+visual_manipulation            555
+coordinated_reuse              540
+borderline_recompress           24
+borderline_ambiguous_reuse      24
+
+=== 1. pHash separation: same-root reuse vs unrelated ===
+  same root      n= 4508  mean=  8.1  p95=  20  max=28
+  different root n= 3997  mean= 31.3  p5=  24   min=16
+  margin (diff p5 - same p95) = 4  CLEAN
+
+=== 2. Embedding cosine separation ===
+  same root      mean=0.942  p5=0.864
+  different root mean=0.384  p95=0.570
+
+=== 3. Manipulation score vs threshold (0.25) ===
+  genuine                  n=1650  mean=0.066  range=[0.010,0.120]
+  visual_manipulation      n=555  mean=0.820  range=[0.651,0.970]
+  text_deception           n=555  mean=0.068  range=[0.010,0.120]
+  coordinated_reuse        n=540  mean=0.081  range=[0.020,0.150]
+  borderline_recompress    n= 24  mean=0.139  range=[0.075,0.199]
+
+=== 4. Negative controls ===
+  legit_stock_reuse                          n=32  labels={'Genuine': np.int64(32)}
+  recompress_only_below_threshold            n=24  labels={'Needs_Verification': np.int64(24)}
+  weak_reuse_not_campaign                    n=24  labels={'Needs_Verification': np.int64(24)}
+  recompress-only rows above threshold: 0  OK
+  legit stock reuse all labelled Genuine: OK  (shares root with 37 rows total)
+
+=== 5. Campaign integrity (burst timing) ===
+  campaigns=105  members=540  max span=2.87h  (design target <=3h)
+  genuine posting spread: 180 days
+
+=== 6. Rating skew ===
+rating                        1    2   3    4    5
+fraud_type                                        
+borderline_ambiguous_reuse    4    4   0    4   12
+borderline_recompress         3    1   2    6   12
+coordinated_reuse             0    0   0   55  485
+genuine                     193  169  93  468  727
+text_deception               42   14   0   42  457
+visual_manipulation          66   63  32  132  262
+
+=== 7. Text specificity gap (proxy: distinct-token ratio) ===
+  genuine              unique_text_ratio=0.79  mean_len=19.3 words
+  text_deception       unique_text_ratio=0.34  mean_len=14.6 words
+  coordinated_reuse    unique_text_ratio=0.14  mean_len=12.9 words
+
+=== 8. Split integrity ===
+  train         2490 rows, fraud 50.0%
+  test_balanced 810 rows, fraud 50.0%
+  holdout       474 rows, fraud 14.6%
+  root overlap train/test: 0 (must be 0)  OK
+  categories in train 15, test 15
+
+=== 9. Balance (v6) ===
+  overall   Genuine=1650  Fake=1650  OK
+  train per-category Genuine==Fake in all 15 categories: OK
+  test  per-category Genuine==Fake in all 15 categories: OK
+  roots used by BOTH Genuine and Fake rows: 822/826 (100%)
+  fraud_type split of the Fake half: {'text_deception': 555, 'visual_manipulation': 555, 'coordinated_reuse': 540}

@@ -1,0 +1,8 @@
+                           features  n_features  accuracy  precision  recall    f1  roc_auc  pr_auc_holdout15  flagged_visual_manipulation  flagged_text_deception  flagged_coordinated_reuse  flagged_genuine
+                          TEXT only           8     0.779      0.892   0.635 0.742    0.796             0.692                        0.074                   0.830                      1.000            0.077
+                         IMAGE only          22     0.694      0.808   0.509 0.624    0.746             0.512                        0.407                   0.185                      0.933            0.121
+       BEHAVIOUR only (rating/time)           5     0.619      0.622   0.605 0.613    0.656             0.377                        0.363                   0.585                      0.867            0.368
+                         GRAPH only           4     0.570      0.569   0.578 0.574    0.600             0.205                        0.400                   0.452                      0.881            0.437
+                       TEXT + IMAGE          30     0.815      0.944   0.669 0.783    0.868             0.770                        0.267                   0.741                      1.000            0.040
+TEXT + BEHAVIOUR + GRAPH (no image)          17     0.784      0.917   0.625 0.743    0.798             0.704                        0.037                   0.837                      1.000            0.057
+   ALL (text+image+behaviour+graph)          39     0.814      0.954   0.659 0.780    0.867             0.781                        0.215                   0.763                      1.000            0.032

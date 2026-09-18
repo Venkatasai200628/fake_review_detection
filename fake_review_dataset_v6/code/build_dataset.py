@@ -257,16 +257,24 @@ def plan_rows(pool):
             cyc = RootCycler(cells[(split, cat)])
             n_fake = 0
 
-            # visual_manipulation -- authentic-sounding text, edited pixels
+            # visual_manipulation -- edited pixels, EVERYTHING ELSE genuine.
+            # v6.1: text, sentiment and star rating are drawn exactly like a
+            # genuine review (same pos/neg/mixed mix, same 18% lazy text, same
+            # rating rule). In v6.0 these rows were always 4-5 stars with happy
+            # text, so rating alone caught 74% of them without looking at the
+            # photo -- a generator shortcut. Now only the pixels can tell.
             for _ in range(split_quota(FAKE_PER_CATEGORY['visual_manipulation'], split)):
                 rid = cyc.next()
                 donor_pool = [r for c in categories for r in cells[(split, c)] if r != rid]
-                text, _ = GT.gen_genuine_text(cat, rng, sentiment='pos')
+                if rng.random() < LAZY_GENUINE_FRACTION:
+                    text, sent = GT.gen_lazy_genuine_text(rng), 'pos'
+                else:
+                    text, sent = GT.gen_genuine_text(cat, rng)
                 add(root_image_id=rid, fraud_type='visual_manipulation', label='Fake',
                     render='manipulate', donor_path=path_of[rng.choice(donor_pool)],
                     reviewer_id=rng.choice(genuine_accts),
                     timestamp=spread_timestamp(), review_text=text,
-                    rating=GT.gen_rating('visual_manipulation', rng, 'pos'))
+                    rating=GT.gen_rating('genuine', rng, sent))
                 n_fake += 1
 
             # text_deception -- clean real photo, deceptive text

@@ -26,6 +26,7 @@ import imagehash
 PHASH_REUSE_THRESHOLD = 20      # Hamming; validated margin sits at ~18 vs 24
 COSINE_REUSE_THRESHOLD = 0.749   # CLIP ViT-B/32; max Youden J on v6 data (TPR 0.997, FPR 0.0039). Placeholder value was 0.94.
 BURST_WINDOW_HOURS = 6
+CNN_SCORES_CSV = '../out/cnn_manip_scores.csv'   # see cnn_forensics.py
 
 GENERIC_TOKENS = {
     'amazing', 'excellent', 'superb', 'perfect', 'best', 'outstanding',
@@ -82,7 +83,8 @@ def _reuse_index(df):
     return ids, H, C
 
 
-def image_features(df, index, forensic_csv='../out/forensic_features.csv'):
+def image_features(df, index, forensic_csv='../out/forensic_features.csv',
+                   overrides=None):
     """
     NOTE ON THE MANIPULATION FEATURE
     Earlier versions used the `manipulation_score` COLUMN, which is the
@@ -92,7 +94,14 @@ def image_features(df, index, forensic_csv='../out/forensic_features.csv'):
     block touches a label.
     """
     ids, H, C = index
-    forensic = pd.read_csv(forensic_csv).set_index('review_id')
+    # overrides: {'forensic': df, 'xmodal': df, 'cnn': df}, each indexed by
+    # review_id. Used by the extension backend to pass features of brand-new
+    # photos; training leaves it None and reads the CSVs as before.
+    ov = overrides or {}
+    if 'forensic' in ov:
+        forensic = ov['forensic']
+    else:
+        forensic = pd.read_csv(forensic_csv).set_index('review_id')
     pos = {k: i for i, k in enumerate(ids)}
     rows = []
     reviewer = df.set_index('image_id').reviewer_id.to_dict()
@@ -139,10 +148,27 @@ def image_features(df, index, forensic_csv='../out/forensic_features.csv'):
     # cannot be fetched in the sandbox. Absent, the pipeline runs unchanged
     # with the placeholder descriptor, so results stay reproducible either way.
     try:
-        xm = pd.read_csv('../out/clip_cross_modal.csv').set_index('review_id')
+        if 'xmodal' in ov:
+            xm = ov['xmodal']
+        else:
+            xm = pd.read_csv('../out/clip_cross_modal.csv').set_index('review_id')
         xc = xm.reindex(df.review_id.values)
         xc.index = df.index
         parts.append(xc)
+    except FileNotFoundError:
+        pass
+
+    # CNN on forensic maps (cnn_forensics.py): out-of-fold "photo was edited"
+    # probability. crossval.py uses the cross-fitted file; train_model.py
+    # switches CNN_SCORES_CSV to the train-roots-only file.
+    try:
+        if 'cnn' in ov:
+            cs = ov['cnn']
+        else:
+            cs = pd.read_csv(CNN_SCORES_CSV).set_index('review_id')
+        cc = cs.reindex(df.review_id.values)
+        cc.index = df.index
+        parts.append(cc)
     except FileNotFoundError:
         pass
 
@@ -178,13 +204,19 @@ def graph_features(df, index):
     pos = {k: i for i, k in enumerate(ids)}
     reviewer = df.set_index('image_id').reviewer_id.to_dict()
 
+    # Nodes and edges are added in SORTED order: Louvain's result depends on
+    # insertion order, so without this the same graph gave different community
+    # sizes when rows arrived in a different order (found by the backend
+    # parity test -- g_community_size differed by 173).
     G = nx.Graph()
-    G.add_nodes_from(df.reviewer_id.unique())
+    G.add_nodes_from(sorted(df.reviewer_id.unique()))
     A = np.triu((H <= PHASH_REUSE_THRESHOLD) | (C >= COSINE_REUSE_THRESHOLD), k=1)
+    edges = set()
     for a, b in zip(*np.nonzero(A)):
         ra, rb = reviewer[ids[a]], reviewer[ids[b]]
         if ra != rb:
-            G.add_edge(ra, rb, weight=1.0)
+            edges.add((min(ra, rb), max(ra, rb)))
+    G.add_edges_from(sorted(edges), weight=1.0)
 
     clust = nx.clustering(G)
     deg = dict(G.degree())
@@ -216,11 +248,11 @@ BLOCKS = {
 }
 
 
-def build_all(df):
+def build_all(df, overrides=None):
     index = _reuse_index(df)
     return {
         'TEXT': text_features(df),
-        'IMAGE': image_features(df, index),
+        'IMAGE': image_features(df, index, overrides=overrides),
         'BEHAVIOUR': behaviour_features(df),
         'GRAPH': graph_features(df, index),
     }
