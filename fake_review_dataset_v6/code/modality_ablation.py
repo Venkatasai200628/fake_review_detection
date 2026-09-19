@@ -28,6 +28,7 @@ CONFIGS = {
 
 def main():
     F.CNN_SCORES_CSV = f'{OUT}/cnn_manip_scores_split.csv'
+    F.TEXT_SCORES_CSV = f'{OUT}/text_model_scores_split.csv'   # train-only MiniLM
     full = pd.read_csv(f'{OUT}/reviews_full.csv')
     B = F.build_all(full)
     for k in B:

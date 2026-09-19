@@ -1,0 +1,6 @@
+model,accuracy,f1,roc_auc,pr_auc_holdout15,share_of_ceiling,caught_text_deception,caught_coordinated,caught_edited_photo,false_alarm_genuine,seconds
+1 hand-made 8 features + RF,0.775,0.738,0.796,0.69,0.93,0.83,1.0,0.067,0.081,2
+2 TF-IDF words+chars + LogReg,0.82,0.79,0.832,0.764,0.984,1.0,1.0,0.037,0.04,1
+3 MiniLM-L6 embeddings + LogReg,0.822,0.792,0.827,0.765,0.987,0.985,1.0,0.044,0.032,37
+4 MPNet-base embeddings + LogReg,0.811,0.783,0.841,0.748,0.973,1.0,1.0,0.044,0.059,106
+5 DistilRoBERTa fine-tuned,0.833,0.8,0.842,0.774,1.0,1.0,1.0,0.0,0.0,1088

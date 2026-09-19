@@ -1,0 +1,8 @@
+features,n_features,accuracy,precision,recall,f1,roc_auc,pr_auc_holdout15,flagged_visual_manipulation,flagged_text_deception,flagged_coordinated_reuse,flagged_genuine
+TEXT only,9,0.811,0.909,0.691,0.785,0.838,0.752,0.089,0.985,1.0,0.069
+IMAGE only,23,0.765,0.872,0.622,0.726,0.812,0.657,0.852,0.052,0.963,0.091
+BEHAVIOUR only (rating/time),5,0.619,0.622,0.605,0.613,0.656,0.377,0.363,0.585,0.867,0.368
+GRAPH only,4,0.554,0.556,0.543,0.549,0.595,0.228,0.37,0.385,0.874,0.435
+TEXT + IMAGE,32,0.944,0.952,0.936,0.944,0.977,0.955,0.83,0.978,1.0,0.047
+TEXT + BEHAVIOUR + GRAPH (no image),18,0.821,0.971,0.662,0.787,0.815,0.747,0.015,0.97,1.0,0.02
+ALL (text+image+behaviour+graph),41,0.943,0.952,0.933,0.943,0.976,0.958,0.822,0.978,1.0,0.047

@@ -1,0 +1,32 @@
+PART A -- photo-reuse embeddings
+  CLIP ViT-B/32 (current)    AUC(all) 0.9999  AUC(vs same category) 0.9982  TPR@0.1%FPR 0.830
+    vit_small_patch14_dinov2.lvd142m: 0/3348
+    vit_small_patch14_dinov2.lvd142m: 640/3348
+    vit_small_patch14_dinov2.lvd142m: 1280/3348
+    vit_small_patch14_dinov2.lvd142m: 1920/3348
+    vit_small_patch14_dinov2.lvd142m: 2560/3348
+    vit_small_patch14_dinov2.lvd142m: 3200/3348
+  DINOv2 ViT-S/14            AUC(all) 0.9999  AUC(vs same category) 0.9992  TPR@0.1%FPR 0.922
+    vit_base_patch14_dinov2.lvd142m: 0/3348
+    vit_base_patch14_dinov2.lvd142m: 640/3348
+    vit_base_patch14_dinov2.lvd142m: 1280/3348
+    vit_base_patch14_dinov2.lvd142m: 1920/3348
+    vit_base_patch14_dinov2.lvd142m: 2560/3348
+    vit_base_patch14_dinov2.lvd142m: 3200/3348
+  DINOv2 ViT-B/14            AUC(all) 0.9999  AUC(vs same category) 0.9988  TPR@0.1%FPR 0.898
+    resnet50.a1_in1k: 0/3348
+    resnet50.a1_in1k: 640/3348
+    resnet50.a1_in1k: 1280/3348
+    resnet50.a1_in1k: 1920/3348
+    resnet50.a1_in1k: 2560/3348
+    resnet50.a1_in1k: 3200/3348
+  ResNet-50 ImageNet         AUC(all) 1.0000  AUC(vs same category) 0.9995  TPR@0.1%FPR 0.947
+PART B -- edit detectors on forensic maps
+Traceback (most recent call last):
+  File "D:\sem-5 projects\computer vision\dataset\fake_review_dataset_v6\code\compare_image_models.py", line 163, in <module>
+    print('\nPART B -- edit detectors on forensic maps'); part_b()
+  File "D:\sem-5 projects\computer vision\dataset\fake_review_dataset_v6\code\compare_image_models.py", line 126, in part_b
+    sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=lr, total_steps=n_steps)
+  File "C:\Users\venka\AppData\Roaming\Python\Python310\site-packages\torch\optim\lr_scheduler.py", line 1991, in __init__
+    raise ValueError(
+ValueError: Expected positive integer total_steps, but got 560

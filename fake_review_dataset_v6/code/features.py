@@ -18,15 +18,21 @@ root_image_id, so a holdout row's near-duplicates live in holdout too.
 """
 
 import json
+import os
 import numpy as np
 import pandas as pd
 import networkx as nx
 import imagehash
 
 PHASH_REUSE_THRESHOLD = 20      # Hamming; validated margin sits at ~18 vs 24
-COSINE_REUSE_THRESHOLD = 0.749   # CLIP ViT-B/32; max Youden J on v6 data (TPR 0.997, FPR 0.0039). Placeholder value was 0.94.
+CLIP_REUSE_THRESHOLD = 0.749     # CLIP ViT-B/32; max Youden J on v6 data (TPR 0.997, FPR 0.0039). Placeholder value was 0.94.
+RESNET_REUSE_THRESHOLD = 0.72    # ResNet-50 reuse vectors; max Youden J on v6.1 (TPR 0.9997, FPR 0.0015)
+COSINE_REUSE_THRESHOLD = CLIP_REUSE_THRESHOLD   # set by _reuse_index() to whichever vectors are in use
+REUSE_EMB_NPY = '../out/reuse_embeddings_resnet50.npy'   # see reuse_embedding.py
+REUSE_IDS_CSV = '../out/reuse_embeddings_ids.csv'
 BURST_WINDOW_HOURS = 6
 CNN_SCORES_CSV = '../out/cnn_manip_scores.csv'   # see cnn_forensics.py
+TEXT_SCORES_CSV = '../out/text_model_scores.csv'  # see text_model.py
 
 GENERIC_TOKENS = {
     'amazing', 'excellent', 'superb', 'perfect', 'best', 'outstanding',
@@ -41,7 +47,7 @@ SPECIFIC_MARKERS = {
 
 # ---------------------------------------------------------------- TEXT
 
-def text_features(df):
+def text_features(df, overrides=None):
     t = df.review_text.fillna('')
     words = t.str.lower().str.findall(r"[a-z']+")
     n = words.apply(len).replace(0, 1)
@@ -58,15 +64,52 @@ def text_features(df):
     # near-duplicate text across the corpus: the campaign-template signal
     counts = t.str.lower().str.strip().value_counts()
     out['txt_exact_dup_count'] = t.str.lower().str.strip().map(counts).fillna(1)
+
+    # MiniLM sentence-embedding model (text_model.py): out-of-fold "this text
+    # is deceptive" probability. crossval.py uses the cross-fitted file;
+    # train_model.py / the backend use the train-only file or an override.
+    ov = overrides or {}
+    try:
+        if 'text_model' in ov:
+            ts = ov['text_model']
+        else:
+            ts = pd.read_csv(TEXT_SCORES_CSV).set_index('review_id')
+        tc = ts.reindex(df.review_id.values)
+        tc.index = df.index
+        out = pd.concat([out, tc], axis=1)
+    except FileNotFoundError:
+        pass
     return out
 
 
 # ----------------------------------------------------- IMAGE (forensic)
 
-def _reuse_index(df):
-    """Pairwise near-duplicate structure over the whole corpus."""
+def _load_reuse_embeddings():
+    """review_id -> ResNet-50 reuse vector (reuse_embedding.py), or None."""
+    if not os.path.exists(REUSE_EMB_NPY):
+        return None
+    E = np.load(REUSE_EMB_NPY).astype(np.float32)
+    ids = pd.read_csv(REUSE_IDS_CSV).review_id.values
+    return dict(zip(ids, E))
+
+
+def _reuse_index(df, overrides=None):
+    """Pairwise near-duplicate structure over the whole corpus.
+
+    v6.1: the similarity side uses ResNet-50 reuse vectors when available
+    (better at "same photo, lightly edited" than CLIP -- see
+    reuse_embedding.py); otherwise the CLIP `embedding` column as before.
+    """
+    global COSINE_REUSE_THRESHOLD
     hashes = {r.image_id: imagehash.hex_to_hash(r.phash) for r in df.itertuples()}
-    embs = {r.image_id: np.array(json.loads(r.embedding)) for r in df.itertuples()}
+    ov = overrides or {}
+    rmap = ov.get('reuse_emb') if 'reuse_emb' in ov else _load_reuse_embeddings()
+    if rmap is not None:
+        embs = {r.image_id: rmap[r.review_id] for r in df.itertuples()}
+        COSINE_REUSE_THRESHOLD = RESNET_REUSE_THRESHOLD
+    else:
+        embs = {r.image_id: np.array(json.loads(r.embedding)) for r in df.itertuples()}
+        COSINE_REUSE_THRESHOLD = CLIP_REUSE_THRESHOLD
     ids = list(hashes)
     E = np.stack([embs[i] for i in ids])
     E = E / (np.linalg.norm(E, axis=1, keepdims=True) + 1e-8)
@@ -249,9 +292,9 @@ BLOCKS = {
 
 
 def build_all(df, overrides=None):
-    index = _reuse_index(df)
+    index = _reuse_index(df, overrides)
     return {
-        'TEXT': text_features(df),
+        'TEXT': text_features(df, overrides=overrides),
         'IMAGE': image_features(df, index, overrides=overrides),
         'BEHAVIOUR': behaviour_features(df),
         'GRAPH': graph_features(df, index),

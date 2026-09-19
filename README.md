@@ -30,8 +30,11 @@ python recompute_embeddings.py
 python validate.py
 python forensic_maps.py       # 128x128 ELA/noise maps (not in git: 330 MB, rebuilt in ~2 min)
 python cnn_forensics.py       # forensic CNN (~2.5 h on CPU)
-python crossval.py            # fusion PR-AUC 0.863 vs base-paper-equivalent 0.729 (p = 5e-14)
-python train_model.py         # final model: holdout PR-AUC 0.918
+python reuse_embedding.py     # ResNet-50 reuse fingerprints
+python text_model.py          # MiniLM text score
+python crossval.py            # fusion PR-AUC 0.902 vs base-paper-equivalent 0.758 (p = 2e-16)
+python train_model.py         # final model: holdout PR-AUC 0.958
+python verify_requirements.py  # requirements proof -> out/REQUIREMENTS_CHECK.md
 python modality_ablation.py   # text-only / image-only / text+image / ... table
 ```
 

@@ -1,41 +1,41 @@
-trained on 2490 rows, 40 features
+trained on 2490 rows, 41 features
 
 === FINAL MODEL on unseen root photos (threshold 0.5) ===
                           set  rows  fake_pct  PR-AUC  ROC-AUC    F1  Precision  Recall  TN  FP  FN  TP
-     test_balanced (50% fake)   810      50.0   0.964    0.948 0.903      0.961   0.852 391  14  60 345
-holdout_realistic (~15% fake)   474      14.6   0.918    0.957 0.847      0.813   0.884 391  14   8  61
+     test_balanced (50% fake)   810      50.0   0.982    0.976 0.943      0.952   0.933 386  19  27 378
+holdout_realistic (~15% fake)   474      14.6   0.958    0.980 0.857      0.776   0.957 386  19   3  66
 
 === share flagged as Fake, by fraud_type (test_balanced) ===
 fraud_type
 coordinated_reuse      1.000
-genuine                0.035
-text_deception         0.748
-visual_manipulation    0.807
+genuine                0.047
+text_deception         0.978
+visual_manipulation    0.822
 
 === three-way decision (Genuine < 0.35 <= Needs_Verification <= 0.65 < Fake), test_balanced ===
 decision  Fake  Genuine  Needs_Verification
 label                                      
-Fake       324       43                  38
-Genuine      3      354                  48
+Fake       352       24                  29
+Genuine      4      361                  40
 
 === Needs_Verification controls -> model decision ===
-decision                    Genuine
-fraud_type                         
-borderline_ambiguous_reuse       24
-borderline_recompress            24
+decision                    Fake  Genuine
+fraud_type                               
+borderline_ambiguous_reuse     1       23
+borderline_recompress          0       24
 
 legit stock reuse (must NOT be flagged): 0/12 flagged
 
 === top 10 features ===
-img_cnn_manip          0.1351
-txt_generic_ratio      0.1015
-txt_len                0.0897
-txt_exact_dup_count    0.0503
-img_max_cosine         0.0494
-txt_sent_count         0.0432
-txt_unique_ratio       0.0425
-img_reuse_in_burst     0.0406
-img_burst_ratio        0.0360
-txt_specific_ratio     0.0260
+txt_minilm_p           0.1844
+img_cnn_manip          0.1396
+txt_generic_ratio      0.0917
+txt_len                0.0599
+img_max_cosine         0.0471
+txt_exact_dup_count    0.0440
+img_reuse_in_burst     0.0305
+txt_unique_ratio       0.0276
+img_burst_ratio        0.0241
+txt_specific_ratio     0.0231
 
 saved ../out/model/fusion_rf.joblib

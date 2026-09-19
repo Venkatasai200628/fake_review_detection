@@ -1,0 +1,4 @@
+model,roc_auc_test,roc_auc_copy_move,roc_auc_splice,roc_auc_noise,caught_at_0.5,false_alarm_at_0.5,params_M,seconds
+small CNN (current),0.953,0.9065,0.9708,0.9703,0.8593,0.0656,0.2115,1172
+ResNet-18 pretrained,0.9423,0.9038,0.9727,0.9404,0.8,0.0729,11.177,673
+EfficientNet-B0 pretrained,0.9442,0.8831,0.9756,0.9587,0.7556,0.0641,4.0088,1407

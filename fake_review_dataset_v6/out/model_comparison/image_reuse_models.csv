@@ -1,0 +1,5 @@
+model,roc_auc_all_pairs,roc_auc_vs_same_category,tpr_at_0.1pct_fpr_same_category,mean_sim_same_photo,mean_sim_other_photo_same_category,dim,seconds
+CLIP ViT-B/32 (current),0.9999,0.9982,0.83,0.9441,0.5717,512,4
+DINOv2 ViT-S/14,0.9999,0.9992,0.9217,0.9633,0.4063,384,585
+DINOv2 ViT-B/14,0.9999,0.9988,0.8983,0.9614,0.4101,768,1346
+ResNet-50 ImageNet,1.0,0.9995,0.9473,0.9529,0.4592,2048,618

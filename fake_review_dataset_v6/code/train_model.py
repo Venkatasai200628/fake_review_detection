@@ -62,6 +62,7 @@ def report(name, y, p):
 def main():
     # CNN image score trained on TRAIN roots only -> test numbers stay clean
     F.CNN_SCORES_CSV = f'{OUT}/cnn_manip_scores_split.csv'
+    F.TEXT_SCORES_CSV = f'{OUT}/text_model_scores_split.csv'   # train-only MiniLM
     full = pd.read_csv(f'{OUT}/reviews_full.csv')
     blocks = F.build_all(full)
     X = pd.concat(blocks.values(), axis=1)
