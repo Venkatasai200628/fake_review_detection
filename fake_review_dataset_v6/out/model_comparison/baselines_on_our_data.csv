@@ -1,0 +1,7 @@
+method,represents papers,accuracy,f1,roc_auc,pr_auc_holdout15,edited_photo_caught,fake_text_caught,coordinated_caught,false_alarms
+B1 TF-IDF + linear SVM,"17, 23, 27, 29",0.802,0.775,0.833,0.763,0.044,1.0,1.0,0.077
+B2 fine-tuned transformer (DistilRoBERTa),"09, 13, 26, 30, 38, 40",0.833,0.8,0.842,0.774,0.0,1.0,1.0,0.0
+B3 sentence embeddings + behaviour,"12, 15, 31",0.788,0.754,0.829,0.754,0.081,0.867,1.0,0.074
+"B4 He et al. 2022 (base paper, with image sim.)",33,0.793,0.751,0.808,0.716,0.044,0.83,1.0,0.04
+B5 multimodal embeddings (FRIDRC-style),11,0.851,0.835,0.898,0.827,0.356,0.919,1.0,0.057
+OURS forensic fusion,-,0.943,0.943,0.976,0.958,0.822,0.978,1.0,0.047
