@@ -96,7 +96,7 @@
     ]
   },
   "cosine_reuse_threshold": 0.72,
-  "phash_reuse_threshold": 20,
+  "phash_reuse_threshold": 12,
   "decision_bands": {
     "genuine_below": 0.35,
     "fake_above": 0.65
@@ -107,34 +107,34 @@
       "rows": 810,
       "fake_pct": 50.0,
       "PR-AUC": 0.976,
-      "ROC-AUC": 0.966,
-      "F1": 0.922,
-      "Precision": 0.975,
-      "Recall": 0.874,
-      "TN": 396,
-      "FP": 9,
-      "FN": 51,
-      "TP": 354
+      "ROC-AUC": 0.967,
+      "F1": 0.929,
+      "Precision": 0.978,
+      "Recall": 0.884,
+      "TN": 397,
+      "FP": 8,
+      "FN": 47,
+      "TP": 358
     },
     {
       "set": "holdout_realistic (~15% fake)",
       "rows": 474,
       "fake_pct": 14.6,
-      "PR-AUC": 0.954,
-      "ROC-AUC": 0.979,
-      "F1": 0.886,
-      "Precision": 0.873,
-      "Recall": 0.899,
-      "TN": 396,
-      "FP": 9,
-      "FN": 7,
-      "TP": 62
+      "PR-AUC": 0.955,
+      "ROC-AUC": 0.98,
+      "F1": 0.908,
+      "Precision": 0.889,
+      "Recall": 0.928,
+      "TN": 397,
+      "FP": 8,
+      "FN": 5,
+      "TP": 64
     }
   ],
   "per_fraud_type_flag_rate": {
     "coordinated_reuse": 1.0,
-    "genuine": 0.022,
-    "text_deception": 0.83,
-    "visual_manipulation": 0.793
+    "genuine": 0.02,
+    "text_deception": 0.844,
+    "visual_manipulation": 0.807
   }
 }

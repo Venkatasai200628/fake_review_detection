@@ -24,7 +24,17 @@ import pandas as pd
 import networkx as nx
 import imagehash
 
-PHASH_REUSE_THRESHOLD = 20      # Hamming; validated margin sits at ~18 vs 24
+# Hamming distance between 64-bit pHashes. 20 was set from the same-photo/different-photo
+# margin (~18 vs 24) but never checked for how many FALSE partners it produces at scale, and
+# reuse is scored as "pHash close OR embedding close", so a loose pHash overrides a correct
+# embedding verdict. Measured on v6 (backend/diagnose_threshold.py):
+#     threshold 20 -> keeps 97% of true reuse, 0.74% of unrelated pairs = ~25 false partners
+#                     per photo against a 3,348-photo memory
+#     threshold 12 -> keeps 85% of true reuse, 0.01% of unrelated pairs = ~0.3 false partners
+# On a live Flipkart page a brand-new 360px photo matched 40 memory photos at 20, while
+# ResNet-50 correctly reported its nearest neighbour at cosine 0.598 (threshold 0.72).
+# Small, heavily compressed photos collide worst, which is exactly what review photos are.
+PHASH_REUSE_THRESHOLD = 12
 CLIP_REUSE_THRESHOLD = 0.749     # CLIP ViT-B/32; max Youden J on v6 data (TPR 0.997, FPR 0.0039). Placeholder value was 0.94.
 RESNET_REUSE_THRESHOLD = 0.72    # ResNet-50 reuse vectors; max Youden J on v6.1 (TPR 0.9997, FPR 0.0015)
 COSINE_REUSE_THRESHOLD = CLIP_REUSE_THRESHOLD   # set by _reuse_index() to whichever vectors are in use

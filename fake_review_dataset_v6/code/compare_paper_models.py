@@ -95,6 +95,13 @@ def score(key, name, paper, p_te, p_ho, secs):
     print(f"  => {name:32s} acc {r['accuracy']:.3f}  F1 {r['f1']:.3f}  ROC {r['roc_auc']:.3f}  "
           f"edited-photo {r['edited_photo_caught']:.0%}  fake-text {r['fake_text_caught']:.0%}  "
           f"false alarms {r['false_alarms']:.1%}  [{secs:.0f}s]", flush=True)
+    # Save per-row probabilities. Without these, re-checking a comparison (confidence
+    # intervals, a different McNemar pairing, a threshold sweep) means retraining all seven
+    # models for ~2.5 h. With them it is a file read.
+    os.makedirs(f'{DST}/preds', exist_ok=True)
+    pd.DataFrame({'review_id': te.review_id, 'p_fake': p_te}).to_csv(f'{DST}/preds/{key}_test.csv', index=False)
+    pd.DataFrame({'review_id': ho.review_id, 'p_fake': p_ho}).to_csv(f'{DST}/preds/{key}_holdout.csv', index=False)
+
     old = pd.read_csv(RES_CSV) if os.path.exists(RES_CSV) else pd.DataFrame()
     if len(old):
         old = old[old.key != key]
