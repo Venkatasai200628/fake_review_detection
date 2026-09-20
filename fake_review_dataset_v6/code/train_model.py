@@ -24,7 +24,7 @@ import json
 import joblib
 import numpy as np
 import pandas as pd
-from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import RandomForestClassifier, ExtraTreesClassifier
 from sklearn.metrics import (average_precision_score, roc_auc_score, f1_score,
                              precision_score, recall_score, confusion_matrix)
 
@@ -33,6 +33,20 @@ import features as F
 OUT = '../out'
 MODEL_DIR = f'{OUT}/model'
 SEED = 20260919
+
+# Which classifier sits on top of the 41 features. compare_fusion_models.py tries the
+# candidates and ranks them on accuracy over test rows whose text never appears in
+# training; v6.2 result: Extra Trees wins (see out/model_comparison/fusion_models.md).
+FUSION = 'extra_trees'          # 'extra_trees' | 'random_forest'
+
+
+def make_fusion():
+    if FUSION == 'extra_trees':
+        return ExtraTreesClassifier(n_estimators=1000, min_samples_leaf=2, max_features='sqrt',
+                                    class_weight='balanced_subsample', n_jobs=-1, random_state=SEED)
+    return RandomForestClassifier(n_estimators=500, min_samples_leaf=2,
+                                  class_weight='balanced', n_jobs=-1, random_state=SEED)
+
 
 # Three-way decision bands on the fake-probability (guide section 5.3).
 # Below T_LOW -> Genuine, above T_HIGH -> Fake, in between -> Needs Verification.
@@ -76,9 +90,7 @@ def main():
     nv = pd.read_csv(f'{OUT}/needs_verification_controls.csv')
     y_of = dict(zip(full.review_id, (full.label == 'Fake').astype(int)))
 
-    model = RandomForestClassifier(n_estimators=500, min_samples_leaf=2,
-                                   class_weight='balanced', n_jobs=-1,
-                                   random_state=SEED)
+    model = make_fusion()
     model.fit(X.loc[train_ids].values, train_ids.map(y_of).values)
     print(f"trained on {len(train_ids)} rows, {len(cols)} features")
 
@@ -133,8 +145,7 @@ def main():
         joblib.dump(m, f'{MODEL_DIR}/{name}_rf.joblib', compress=3)
     with open(f'{MODEL_DIR}/model_meta.json', 'w') as f:
         json.dump({
-            'model': 'RandomForestClassifier(n_estimators=500, min_samples_leaf=2, '
-                     'class_weight=balanced)',
+            'model': repr(make_fusion()),
             'trained_on': 'train.csv (balanced 50/50, train root photos only)',
             'features': cols,
             'feature_blocks': {k: list(v.columns) for k, v in blocks.items()},

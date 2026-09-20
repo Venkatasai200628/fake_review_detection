@@ -1,3 +1,13 @@
 _files_to_delete.txt
 files_to_delete.txt
 __pycache__/
+
+# forensic map tensors: regenerate with forensic_maps.py / forensic_maps_extra.py
+# (314 MB each, 628 MB combined -- over GitHub's file size limit)
+fake_review_dataset_v6/out/forensic_maps.npy
+fake_review_dataset_v6/out/forensic_maps_extra.npy
+fake_review_dataset_v6/out/forensic_maps_all.npy
+# feature cache rebuilt by compare_fusion_models.py
+fake_review_dataset_v6/out/model_comparison/_X_cache.pkl
+# local-only safety copy; the old text is kept in out/review_text_v61.csv
+fake_review_dataset_v6/out/reviews_full_v61_backup.csv

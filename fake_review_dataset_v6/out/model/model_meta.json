@@ -1,5 +1,5 @@
 {
-  "model": "RandomForestClassifier(n_estimators=500, min_samples_leaf=2, class_weight=balanced)",
+  "model": "ExtraTreesClassifier(class_weight='balanced_subsample', min_samples_leaf=2,\n                     n_estimators=1000, n_jobs=-1, random_state=20260919)",
   "trained_on": "train.csv (balanced 50/50, train root photos only)",
   "features": [
     "txt_len",
@@ -106,35 +106,35 @@
       "set": "test_balanced (50% fake)",
       "rows": 810,
       "fake_pct": 50.0,
-      "PR-AUC": 0.982,
-      "ROC-AUC": 0.976,
-      "F1": 0.943,
-      "Precision": 0.952,
-      "Recall": 0.933,
-      "TN": 386,
-      "FP": 19,
-      "FN": 27,
-      "TP": 378
+      "PR-AUC": 0.984,
+      "ROC-AUC": 0.98,
+      "F1": 0.948,
+      "Precision": 0.984,
+      "Recall": 0.914,
+      "TN": 399,
+      "FP": 6,
+      "FN": 35,
+      "TP": 370
     },
     {
       "set": "holdout_realistic (~15% fake)",
       "rows": 474,
       "fake_pct": 14.6,
-      "PR-AUC": 0.958,
+      "PR-AUC": 0.963,
       "ROC-AUC": 0.98,
-      "F1": 0.857,
-      "Precision": 0.776,
-      "Recall": 0.957,
-      "TN": 386,
-      "FP": 19,
-      "FN": 3,
-      "TP": 66
+      "F1": 0.929,
+      "Precision": 0.915,
+      "Recall": 0.942,
+      "TN": 399,
+      "FP": 6,
+      "FN": 4,
+      "TP": 65
     }
   ],
   "per_fraud_type_flag_rate": {
     "coordinated_reuse": 1.0,
-    "genuine": 0.047,
-    "text_deception": 0.978,
-    "visual_manipulation": 0.822
+    "genuine": 0.015,
+    "text_deception": 0.941,
+    "visual_manipulation": 0.8
   }
 }

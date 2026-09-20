@@ -1,13 +1,13 @@
 | Paper | Re-built model | Accuracy | F1 | ROC-AUC | PR-AUC @15% | Edited photo caught | Fake text caught | False alarms | Ours better on / it better on (McNemar p) |
 |---|---|---|---|---|---|---|---|---|---|
-| 02 Shan 2021 | Shan inconsistency + RF | 0.786 | 0.753 | 0.813 | 0.750 | 4% | 91% | 7.7% | 148 / 21 (p=1.0e-24) |
-| 15 Xu 2024 | A-LSTM + behaviour | 0.816 | 0.794 | 0.841 | 0.753 | 13% | 100% | 7.7% | 125 / 22 (p=1.1e-18) |
-| 38 Qayyum 2023 | FRD-LSTM (DCWR + BiLSTM) | 0.830 | 0.797 | 0.839 | 0.769 | 1% | 100% | 1.0% | 113 / 21 (p=2.0e-16) |
-| 39 Duma 2024 | DHMFRD-TER (text + emotion + rating) | 0.788 | 0.772 | 0.825 | 0.773 | 16% | 100% | 14.6% | 149 / 23 (p=8.5e-24) |
-| 30 Lu 2023 | BSTC (BERT + TextCNN) | 0.833 | 0.800 | 0.834 | 0.755 | 0% | 100% | 0.0% | 111 / 22 (p=1.7e-15) |
-| 40 Geetha 2025 | DeBERTa-v3 fine-tuned | 0.827 | 0.797 | 0.841 | 0.771 | 3% | 100% | 2.2% | 116 / 22 (p=1.3e-16) |
-| 11 Hou 2025 | FRIDRC (text enc. + ViT, fused) | 0.833 | 0.800 | 0.846 | 0.782 | 0% | 100% | 0.0% | 111 / 22 (p=1.7e-15) |
-| **ours** | **forensic fusion** | **0.943** | **0.943** | **0.976** | **0.958** | **82%** | 98% | 4.7% | – |
+| 02 Shan 2021 | Shan inconsistency + RF | 0.791 | 0.762 | 0.852 | 0.766 | 20% | 81% | 8.6% | 140 / 12 (p=7.8e-29) |
+| 15 Xu 2024 | A-LSTM + behaviour | 0.778 | 0.766 | 0.845 | 0.773 | 19% | 100% | 17.3% | 158 / 19 (p=1.8e-28) |
+| 38 Qayyum 2023 | FRD-LSTM (DCWR + BiLSTM) | 0.817 | 0.787 | 0.848 | 0.764 | 2% | 100% | 4.0% | 121 / 14 (p=2.0e-22) |
+| 39 Duma 2024 | DHMFRD-TER (text + emotion + rating) | 0.783 | 0.768 | 0.829 | 0.744 | 16% | 100% | 15.3% | 155 / 20 (p=4.6e-27) |
+| 30 Lu 2023 | BSTC (BERT + TextCNN) | 0.835 | 0.802 | 0.847 | 0.771 | 1% | 100% | 0.0% | 107 / 14 (p=6.5e-19) |
+| 40 Geetha 2025 | DeBERTa-v3 fine-tuned | 0.822 | 0.795 | 0.853 | 0.776 | 7% | 100% | 4.7% | 119 / 16 (p=1.2e-20) |
+| 11 Hou 2025 | FRIDRC (text enc. + ViT, fused) | 0.832 | 0.799 | 0.839 | 0.767 | 0% | 100% | 0.2% | 109 / 14 (p=2.1e-19) |
+| **ours** | **forensic fusion** | **0.949** | **0.948** | **0.980** | **0.963** | **80%** | 94% | 1.5% | – |
 
 Simplifications (CPU-only re-builds):
 - 02 Shan 2021: sentiment from DistilBERT-SST2; 9 inconsistency features + 8 base text features
