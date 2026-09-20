@@ -1,3 +1,3 @@
 set,rows,fake_pct,PR-AUC,ROC-AUC,F1,Precision,Recall,TN,FP,FN,TP
-test_balanced (50% fake),810,50.0,0.984,0.98,0.948,0.984,0.914,399,6,35,370
-holdout_realistic (~15% fake),474,14.6,0.963,0.98,0.929,0.915,0.942,399,6,4,65
+test_balanced (50% fake),810,50.0,0.976,0.966,0.922,0.975,0.874,396,9,51,354
+holdout_realistic (~15% fake),474,14.6,0.954,0.979,0.886,0.873,0.899,396,9,7,62
