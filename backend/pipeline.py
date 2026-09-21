@@ -130,6 +130,7 @@ class Pipeline:
         self.mem_text = pd.read_csv(txt_csv).set_index('review_id') if os.path.exists(txt_csv) else None
         self.mem_reuse = F._load_reuse_embeddings()          # review_id -> ResNet-50 vector
         self.n_seen = 0
+        self.n_remembered = self.load_memory()     # photos seen on earlier runs
         self._load_models()
         self._clip = None
         self._cnn = None
@@ -201,6 +202,76 @@ class Pipeline:
             m.eval()
             self._cnn = (CF, m)
         return self._cnn
+
+    # ------------------------------------------------------- persistent memory
+    # Without this the image memory lives only in RAM and is thrown away on every restart, so
+    # "this photo was posted by another account" can never reach beyond the reviews of one
+    # page. That is the honest limitation recorded in guide section 28.5: on a live page we
+    # see ~13 reviews while a real campaign spans pages we never fetch. Writing what we have
+    # seen to disk is what lets the reuse and burst evidence -- novelty claim 2 -- actually
+    # accumulate across pages, sessions and (on a hosted backend) users.
+    def load_memory(self):
+        d = config.MEMORY_DIR
+        rows = os.path.join(d, 'rows.csv')
+        if not config.PERSIST_MEMORY or not os.path.exists(rows):
+            return 0
+        try:
+            extra = pd.read_csv(rows)
+            extra = extra[~extra.review_id.isin(set(self.mem.review_id))]
+            if not len(extra):
+                return 0
+            self.mem = pd.concat([self.mem, extra[MEM_COLS + ['ext_key']]], ignore_index=True)
+            for name, attr in [('forensic', 'mem_forensic'), ('xmodal', 'mem_xmodal'),
+                               ('cnn', 'mem_cnn'), ('text', 'mem_text')]:
+                p = os.path.join(d, f'{name}.csv')
+                cur = getattr(self, attr)
+                if os.path.exists(p) and cur is not None:
+                    add = pd.read_csv(p).set_index('review_id')
+                    setattr(self, attr, pd.concat([cur, add[~add.index.isin(cur.index)]]))
+            p = os.path.join(d, 'reuse.npz')
+            if os.path.exists(p) and self.mem_reuse is not None:
+                z = np.load(p)
+                for rid, vec in zip(z['ids'].tolist(), z['vecs']):
+                    self.mem_reuse.setdefault(rid, vec)
+            # keep review_id unique so a re-run cannot make a row match itself
+            self.n_seen = max(self.n_seen, int(extra.review_id.str.extract(r'EXT(\d+)')[0]
+                                               .astype(float).max() or 0))
+            return len(extra)
+        except Exception as e:                      # a corrupt store must not stop the server
+            print(f'[memory] could not load {rows}: {e}')
+            return 0
+
+    def save_memory(self, new, ov, reuse):
+        """Append the rows just analysed. Appending, not rewriting, so a crash mid-write
+        costs one page rather than the whole store."""
+        if not config.PERSIST_MEMORY:
+            return
+        try:
+            d = config.MEMORY_DIR
+            os.makedirs(d, exist_ok=True)
+            ids = list(new.review_id)
+            p = os.path.join(d, 'rows.csv')
+            new[MEM_COLS + ['ext_key']].to_csv(p, mode='a', header=not os.path.exists(p), index=False)
+            for name, frame in [('forensic', ov.get('forensic')), ('xmodal', ov.get('xmodal')),
+                                ('cnn', ov.get('cnn')), ('text', ov.get('text_model'))]:
+                if frame is None:
+                    continue
+                part = frame[frame.index.isin(ids)]
+                if not len(part):
+                    continue
+                p = os.path.join(d, f'{name}.csv')
+                part.rename_axis('review_id').to_csv(p, mode='a', header=not os.path.exists(p))
+            if reuse:
+                p = os.path.join(d, 'reuse.npz')
+                old_ids, old_vecs = ([], [])
+                if os.path.exists(p):
+                    z = np.load(p)
+                    old_ids, old_vecs = z['ids'].tolist(), list(z['vecs'])
+                np.savez_compressed(p, ids=np.array(old_ids + list(reuse)),
+                                    vecs=np.array(old_vecs + [np.asarray(v, dtype=np.float32)
+                                                              for v in reuse.values()]))
+        except Exception as e:
+            print(f'[memory] could not save: {e}')
 
     # ------------------------------------------------------------ inputs
     @staticmethod
@@ -459,6 +530,7 @@ class Pipeline:
                 self.mem_text = ov['text_model']
             if 'reuse_emb' in ov:
                 self.mem_reuse = ov['reuse_emb']
+            self.save_memory(new, ov, reuse)
 
         summ = {'checked': len(results),
                 'fake': sum(r['decision'] == 'Fake' for r in results),

@@ -17,3 +17,6 @@ backend/__pycache__/
 
 # built by deploy/make_bundle.py, ~50 MB of copies
 deploy/bundle/
+
+# photos this server has seen at run time; grows with use, not part of the dataset
+fake_review_dataset_v6/out/ext_memory/

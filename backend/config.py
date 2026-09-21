@@ -31,6 +31,15 @@ ALLOWED_IMAGE_HOSTS = (
     'images.meesho.com',
 )
 ALLOW_ANY_IMAGE_HOST = os.environ.get('RPF_ALLOW_ANY_HOST', '') == '1'   # testing only
+
+# --- persistent image memory -----------------------------------------------------------
+# The memory of photos this server has seen used to live only in RAM, so it was thrown away
+# on every restart and "this photo was posted by another account" could never reach past the
+# reviews of a single page. Reuse and burst evidence -- the provenance half of the project's
+# novelty -- only becomes real once the memory accumulates across pages and sessions.
+# Set RPF_PERSIST=0 to turn it off, which is what you want when reproducing a measurement.
+PERSIST_MEMORY = os.environ.get('RPF_PERSIST', '1') != '0'
+MEMORY_DIR = os.environ.get('RPF_MEMORY_DIR', os.path.join(OUT_DIR, 'ext_memory'))
 OUT_SIZE = 1024          # same as gen_images.OUT_SIZE
 OUT_QUALITY = 88         # same as gen_images.OUT_QUALITY
 MIN_FORENSIC_EDGE = 1000 # below this, ELA / CNN evidence is weakened (guide 9.7)
