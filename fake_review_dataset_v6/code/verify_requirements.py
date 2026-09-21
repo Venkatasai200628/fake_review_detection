@@ -28,7 +28,7 @@ from sklearn.model_selection import GroupKFold
 import gen_text as GT
 
 OUT = '../out'
-REPO = '../..'
+REPO = '../../source_photos'   # the 15 product photo folders (moved there 21 Sep 2026)
 results = []
 
 

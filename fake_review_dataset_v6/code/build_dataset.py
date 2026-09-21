@@ -53,7 +53,9 @@ import gen_text as GT
 # Configuration
 # --------------------------------------------------------------------------
 SEED = 20260919
-REPO_DIR = '../..'                  # the Layer 1 image pool = root of the GitHub repo
+# The Layer 1 image pool. The 15 product folders used to sit loose in the repo root; they
+# were moved into source_photos/ on 21 Sep 2026 so the root holds code and docs, not photos.
+REPO_DIR = '../../source_photos'
 OUT_DIR = '../out'
 MIN_ROOT_EDGE = 1000                # px, long edge (guide section 9.7)
 TEST_ROOT_FRACTION = 0.25           # share of each category's roots held out
