@@ -73,6 +73,10 @@ models, which takes 30–60 s.
 
 ## 3. Azure
 
+**Every Azure command, in order, is in [AZURE_DEPLOYMENT.md](AZURE_DEPLOYMENT.md)** —
+sign-in, Container Apps, a VM, how to see the VM and your remaining credit, cost control and
+teardown. The summary below is just the shape of it.
+
 Build the bundle and image first:
 
 ```bash
