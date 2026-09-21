@@ -29,12 +29,16 @@ import os
 import re
 import sys
 import hashlib
+import ipaddress
+import socket
 import datetime as dt
 
 import joblib
 import numpy as np
 import pandas as pd
 import requests
+from urllib.parse import urlparse
+
 from dateutil import parser as dparser
 from PIL import Image
 
@@ -200,10 +204,43 @@ class Pipeline:
 
     # ------------------------------------------------------------ inputs
     @staticmethod
+    def check_image_url(url):
+        """Refuse anything that is not a review photo on a marketplace we support.
+
+        Without this, /analyze will fetch any URL a caller sends. That is fine bound to
+        127.0.0.1 and dangerous the moment the server is reachable by anyone else: it turns
+        into a server-side request forgery tool, and the classic target is the cloud metadata
+        endpoint at 169.254.169.254, which can return credentials. Two checks, because either
+        alone is bypassable: the host must be on the allowlist, AND it must not resolve to a
+        private, loopback or link-local address (a DNS name can point anywhere).
+        """
+        p = urlparse(url)
+        if p.scheme not in ('http', 'https'):
+            raise ValueError(f'image URL must be http(s), got {p.scheme!r}')
+        host = (p.hostname or '').lower()
+        if not host:
+            raise ValueError('image URL has no host')
+        if not config.ALLOW_ANY_IMAGE_HOST:
+            allowed = any(host == h or host.endswith('.' + h) for h in config.ALLOWED_IMAGE_HOSTS)
+            if not allowed:
+                raise ValueError(f'image host not allowed: {host}')
+        for info in socket.getaddrinfo(host, None):
+            ip = ipaddress.ip_address(info[4][0])
+            if ip.is_private or ip.is_loopback or ip.is_link_local or ip.is_reserved:
+                raise ValueError(f'image host resolves to a non-public address: {ip}')
+        return url
+
+    @staticmethod
     def load_image(url):
         if url.startswith('/demo-images/') or '/demo-images/' in url:
-            name = url.rsplit('/', 1)[-1]
-            return Image.open(os.path.join(config.OUT_DIR, 'images', name)).convert('RGB')
+            name = os.path.basename(url.rsplit('/', 1)[-1].split('?')[0])
+            path = os.path.join(config.OUT_DIR, 'images', name)
+            # basename() already strips any ../, this makes that explicit and checked
+            if os.path.dirname(os.path.abspath(path)) != os.path.abspath(
+                    os.path.join(config.OUT_DIR, 'images')):
+                raise ValueError('bad demo image path')
+            return Image.open(path).convert('RGB')
+        Pipeline.check_image_url(url)
         r = requests.get(url, headers=UA, timeout=15)
         r.raise_for_status()
         return Image.open(io.BytesIO(r.content)).convert('RGB')

@@ -17,8 +17,10 @@ import os
 import time
 import random
 
+import hmac
+
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -48,7 +50,21 @@ PIPE = Pipeline(exclude_review_ids=DEMO.review_id.tolist())
 N_FEATURES = PIPE.check_model()
 
 app = FastAPI(title='Fake review forensics backend')
-app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_methods=['*'], allow_headers=['*'])
+# Only the extension and the local demo page need to call this. '*' was fine while it was
+# bound to 127.0.0.1; a hosted copy should not be callable from any website a victim visits.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=r'^(chrome-extension://[a-z]+|https?://(127\.0\.0\.1|localhost)(:\d+)?)$',
+    allow_methods=['GET', 'POST'], allow_headers=['*'])
+
+
+def require_token(authorization: str):
+    """No token configured = open, which is correct on 127.0.0.1 and wrong once hosted."""
+    if not config.API_TOKEN:
+        return
+    sent = authorization[7:].strip() if authorization.lower().startswith('bearer ') else authorization.strip()
+    if not hmac.compare_digest(sent, config.API_TOKEN):
+        raise HTTPException(status_code=401, detail='missing or bad token')
 app.mount('/demo-images', StaticFiles(directory=os.path.join(config.OUT_DIR, 'images')), name='img')
 EXT_DIR = os.path.join(config.PROJECT, 'extension')
 app.mount('/ext', StaticFiles(directory=EXT_DIR), name='ext')
@@ -100,14 +116,15 @@ window.chrome = {
 
 @app.get('/health')
 def health():
-    return {'status': 'ok', 'model_dir': config.MODEL_DIR, 'features': N_FEATURES,
+    return {'status': 'ok', 'auth_required': bool(config.API_TOKEN), 'model_dir': config.MODEL_DIR, 'features': N_FEATURES,
             'uses_cnn': PIPE.uses_cnn, 'side_models': sorted(PIPE.side),
             'memory_size': len(PIPE.mem),
             'decision_bands': {'genuine_below': PIPE.t_low, 'fake_above': PIPE.t_high}}
 
 
 @app.post('/analyze')
-def analyze(payload: dict):
+def analyze(payload: dict, authorization: str = Header(default='')):
+    require_token(authorization)
     return PIPE.analyze(payload)
 
 

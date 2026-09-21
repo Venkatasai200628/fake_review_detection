@@ -1,0 +1,43 @@
+{
+  "name": "fake-review-forensics backend",
+
+  // 2 cores / 8 GB is the smallest Codespace that fits comfortably: the server peaks around
+  // 1.1 GB resident. On a GitHub Pro account (which the Student Pack includes) the free quota
+  // is 180 core-hours a month, so a 2-core machine runs ~90 hours free.
+  "hostRequirements": { "cpus": 2, "memory": "8gb", "storage": "32gb" },
+
+  "image": "mcr.microsoft.com/devcontainers/python:3.10",
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {}
+  },
+
+  // opencv needs these even headless; then the CPU-only torch wheels (~1.5 GB, not the
+  // ~2.5 GB CUDA build) and the rest of the requirements.
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y libgl1 libglib2.0-0 && pip install torch --index-url https://download.pytorch.org/whl/cpu && pip install -r backend/requirements.txt transformers sentence-transformers timm",
+
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "forensics backend",
+      // Codespaces gives this a public HTTPS URL, which the extension needs: Chrome will not
+      // let it call plain http:// from an https:// page. Public also means anyone with the
+      // URL can reach it, so set RPF_TOKEN before making it public (see deploy/README.md).
+      "visibility": "private",
+      "onAutoForward": "notify"
+    }
+  },
+
+  "remoteEnv": {
+    "RPF_HOST": "0.0.0.0",
+    "PORT": "8000",
+    "TRANSFORMERS_NO_TF": "1",
+    "USE_TF": "0"
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["ms-python.python"]
+    }
+  }
+}

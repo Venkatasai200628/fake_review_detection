@@ -14,3 +14,6 @@ fake_review_dataset_v6/out/reviews_full_v61_backup.csv
 
 # python caches from the backend
 backend/__pycache__/
+
+# built by deploy/make_bundle.py, ~50 MB of copies
+deploy/bundle/

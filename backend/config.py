@@ -10,7 +10,27 @@ CODE_DIR = os.path.join(V6, 'code')          # features.py, forensics.py, ... (s
 OUT_DIR = os.path.join(V6, 'out')            # image memory = the v6 dataset
 MODEL_DIR = os.path.join(OUT_DIR, 'model')   # <-- drop a better model here and restart
 
-HOST, PORT = '127.0.0.1', 8000
+# On a laptop this listens on 127.0.0.1 and nothing else can reach it. A hosted copy has to
+# bind 0.0.0.0, which is why the two guards below exist -- see deploy/README.md.
+HOST = os.environ.get('RPF_HOST', '127.0.0.1')
+PORT = int(os.environ.get('PORT', os.environ.get('RPF_PORT', 8000)))
+
+# --- guards that only matter once this is reachable by anyone else ----------------------
+# 1. A shared token on /analyze. Empty means open, which is right for 127.0.0.1 and wrong
+#    anywhere else; deploy/ sets it from the environment.
+API_TOKEN = os.environ.get('RPF_TOKEN', '')
+
+# 2. load_image() fetches whatever URL the caller sends. On a laptop that is harmless. On a
+#    public host it is a server-side request forgery hole: a stranger could make the server
+#    fetch internal addresses, including a cloud metadata endpoint (169.254.169.254 on Azure
+#    and AWS) that can hand out credentials. Only these hosts are fetchable, and any host
+#    that resolves to a private, loopback or link-local address is refused regardless.
+ALLOWED_IMAGE_HOSTS = (
+    'm.media-amazon.com', 'images-na.ssl-images-amazon.com', 'images-eu.ssl-images-amazon.com',
+    'rukminim1.flixcart.com', 'rukminim2.flixcart.com', 'rukminim3.flixcart.com',
+    'images.meesho.com',
+)
+ALLOW_ANY_IMAGE_HOST = os.environ.get('RPF_ALLOW_ANY_HOST', '') == '1'   # testing only
 OUT_SIZE = 1024          # same as gen_images.OUT_SIZE
 OUT_QUALITY = 88         # same as gen_images.OUT_QUALITY
 MIN_FORENSIC_EDGE = 1000 # below this, ELA / CNN evidence is weakened (guide 9.7)

@@ -34,6 +34,14 @@
     input:checked + .slider { background: #1d2939; }
     input:checked + .slider::before { transform: translateX(16px); }
     footer { font-size: 11px; color: #98a2b3; margin-top: 12px; }
+    details#adv { margin-top: 12px; border-top: 1px solid #eaecf0; padding-top: 10px; }
+    details#adv > summary { cursor: pointer; font-size: 11px; text-transform: uppercase;
+      letter-spacing: .04em; color: #667085; font-weight: 600; }
+    .hint { font-size: 11px; color: #667085; line-height: 1.45; margin: 8px 0; }
+    #adv input { width: 100%; font: inherit; font-size: 12px; padding: 7px 9px; margin-bottom: 6px;
+      border: 1px solid #d0d5dd; border-radius: 8px; }
+    #adv button { font: inherit; font-size: 12px; font-weight: 600; padding: 7px 12px;
+      border-radius: 8px; border: 1px solid #1d2939; background: #1d2939; color: #fff; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -51,7 +59,19 @@
     <div id="last" class="empty">No page checked yet.</div>
     <label class="toggle"><span>Check reviews on pages</span>
       <span class="switch"><input type="checkbox" id="enabled"><span class="slider"></span></span></label>
-    <footer>Everything runs on this computer. Nothing is uploaded.</footer>
+
+    <details id="adv">
+      <summary>Backend location</summary>
+      <p class="hint">Leave blank to use this computer. To use a hosted copy, paste its
+        <b>https</b> address and the token you set as <code>RPF_TOKEN</code> on the server.</p>
+      <input id="backendUrl" type="url" placeholder="http://127.0.0.1:8000" spellcheck="false">
+      <input id="backendToken" type="password" placeholder="token (only if the server sets one)"
+             autocomplete="off" spellcheck="false">
+      <button id="save" type="button">Save and re-check</button>
+      <p class="hint" id="saved"></p>
+    </details>
+
+    <footer id="foot">Everything runs on this computer. Nothing is uploaded.</footer>
   </main>
   <script src="popup.js"></script>
 </body>
