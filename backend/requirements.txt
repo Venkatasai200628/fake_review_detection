@@ -1,0 +1,14 @@
+fastapi
+uvicorn
+requests
+python-dateutil
+pandas
+numpy
+scikit-learn
+joblib
+networkx
+imagehash
+pillow
+opencv-python
+torch
+open_clip_torch

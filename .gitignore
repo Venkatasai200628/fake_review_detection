@@ -11,3 +11,6 @@ fake_review_dataset_v6/out/forensic_maps_all.npy
 fake_review_dataset_v6/out/model_comparison/_X_cache.pkl
 # local-only safety copy; the old text is kept in out/review_text_v61.csv
 fake_review_dataset_v6/out/reviews_full_v61_backup.csv
+
+# python caches from the backend
+backend/__pycache__/
