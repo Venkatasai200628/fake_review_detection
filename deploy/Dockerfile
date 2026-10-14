@@ -15,9 +15,10 @@ WORKDIR /app
 
 # CPU wheels only. Installed before the code so this layer is cached across code changes.
 COPY backend/requirements.txt /app/backend/requirements.txt
-RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu \
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && pip install --no-cache-dir torch torchvision --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple \
     && pip install --no-cache-dir -r /app/backend/requirements.txt \
     && pip install --no-cache-dir transformers sentence-transformers timm
+RUN python -c "import torch, torchvision, open_clip; print('OK', torch.__version__, torchvision.__version__)"
 
 # Only what the server actually reads. The 349 MB of dataset photos are NOT copied: they are
 # only used by /demo. The image memory works from stored hashes and vectors, which is why the
@@ -25,7 +26,10 @@ RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/wh
 COPY backend/                          /app/backend/
 COPY fake_review_dataset_v6/code/      /app/fake_review_dataset_v6/code/
 COPY fake_review_dataset_v6/out/model/ /app/fake_review_dataset_v6/out/model/
-COPY deploy/bundle/                    /app/fake_review_dataset_v6/out/
+COPY deploy/bundle/  /app/fake_review_dataset_v6/out/
+RUN mkdir -p /app/fake_review_dataset_v6/out/images
+COPY extension/ /app/extension/
+RUN mkdir -p /app/extension
 
 # Pre-download the pretrained encoders so the first request is not a 60 s cold start.
 ENV HF_HOME=/app/.cache TRANSFORMERS_NO_TF=1 USE_TF=0

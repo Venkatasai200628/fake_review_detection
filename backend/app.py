@@ -65,7 +65,9 @@ def require_token(authorization: str):
     sent = authorization[7:].strip() if authorization.lower().startswith('bearer ') else authorization.strip()
     if not hmac.compare_digest(sent, config.API_TOKEN):
         raise HTTPException(status_code=401, detail='missing or bad token')
-app.mount('/demo-images', StaticFiles(directory=os.path.join(config.OUT_DIR, 'images')), name='img')
+img_dir = os.path.join(config.OUT_DIR, 'images')
+if os.path.isdir(img_dir):
+    app.mount('/demo-images', StaticFiles(directory=img_dir), name='img')
 EXT_DIR = os.path.join(config.PROJECT, 'extension')
 app.mount('/ext', StaticFiles(directory=EXT_DIR), name='ext')
 
