@@ -13,6 +13,9 @@ python make_paper_figures.py        # ~2 min (one feature-build pass for fig10-1
 
 ## Figure index
 
+Figures 01–13 come from `make_paper_figures.py`; 14–19 from `make_extra_figures.py`
+(run that one too to regenerate everything).
+
 | File | What it shows | Source data | Suggested caption |
 |---|---|---|---|
 | `fig01_dataset_composition` | (a) 1,650 Genuine vs 1,650 Fake; (b) the three equal fake sub-types; (c) 15 product categories | `out/reviews_balanced.csv` | Composition of the constructed dataset: balanced binary classes, fake reviews split evenly across three fraud mechanisms, and 15 product categories. |
@@ -28,8 +31,17 @@ python make_paper_figures.py        # ~2 min (one feature-build pass for fig10-1
 | `fig11_confusion_matrices` | Confusion matrices at threshold 0.5 | same as fig10 | Confusion matrices at the 0.5 threshold. Only 8 of 405 genuine reviews are falsely flagged on the balanced test set; the realistic holdout yields 2.0% false alarms. |
 | `fig12_threshold_tradeoff` | Precision and recall vs decision threshold | same as fig10 | Deployment trade-off: raising the threshold to ~0.7 eliminates essentially all false alarms while keeping recall above ~0.85 on the realistic holdout. |
 | `fig13_confidence_intervals` | Point estimates with 95% bootstrap CIs | `out/VERIFY_RESULTS.md` (2,000 grouped resamples) | 95% bootstrap confidence intervals (2,000 resamples, grouped by root photo) for every headline metric on both test sets. |
+| `fig14_leakage_shuffle` | Shuffled-label retraining, 5 runs, vs the real model | `out/VERIFY_RESULTS.md` | Leakage control: retraining on randomly shuffled labels collapses the test ROC-AUC to chance (mean 0.509), confirming no feature encodes the answer. |
+| `fig15_robustness_caps` | Fusion vs base-paper gap at 3/5/uncapped variants per root | `IMPLEMENTATION_GUIDE.md` §8.5 | Robustness to non-independent rows: the fusion gap is unchanged (+0.045, p=0.0006) when the dataset is capped to three variants per root photo. |
+| `fig16_ela_resolution` | **New measured sweep** — ELA/noise/combined separability vs output resolution (256–1024px), GroupKFold on root photo | fresh experiment in `make_extra_figures.py` (50 roots, seed 0) | Compression-forensics evidence degrades toward chance as images are downscaled; below ~512px the manipulation signal effectively disappears. Complements the 512/1024 table in §9.7. |
+| `fig17_pipeline` | Full pipeline diagram: layers, fake types, 41 features, fusion, output, deployment | `IMPLEMENTATION_GUIDE.md` §5–6 | System overview: constructed dataset → 41 forensic/behavioural features → fusion model → three-way verdict → FastAPI backend and browser extension. |
+| `fig18_qualitative` | (a) original photo, (b) edited variant, (c) its ELA error map, (d) one coordinated-reuse campaign timeline | `out/images/`, `out/reviews_balanced.csv` | A worked example of the three fraud mechanisms: the copy-pasted patch is visible in (b) and lights up in the ELA map (c); in (d) the same photo is posted by 6 accounts within 2.7 hours. |
+| `fig19_review_examples` | Genuine vs deceptive review text, same category | `out/reviews_balanced.csv` | Example text: genuine reviews carry specific long-term detail; deceptive reviews are short and generic (text is template-generated — see limitations). |
 
 ## Notes for the write-up
+
+- **fig16 is a fresh diagnostic**, not a restatement of §9.7: 50 root photos, one manipulation per root at each resolution, ROC-AUC from GroupKFold grouped on root photo (so a photo can never appear in train and test). Numbers are lower than the §9.7 table because this sweep uses only the 11 hand-crafted ELA/noise statistics (no forensic CNN), on a much smaller sample — quote it as a *trend*, and quote §9.7 as the headline measurement.
+- fig14's five shuffled runs are the exact values from this session's `verify_results.py` run (log: `code/verify_results_run.log`).
 
 - fig04, fig05, fig10-12 come from **the same** trained fusion model and photo-grouped splits, so they can be cited together.
 - fig07's McNemar p-values (each < 1e-11) are in `out/model_comparison/paper_models_on_our_data.csv`, column `mcnemar_p_vs_ours`.

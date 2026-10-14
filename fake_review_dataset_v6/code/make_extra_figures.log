@@ -1,0 +1,15 @@
+D:\sem-5 projects\computer vision\dataset\fake_review_dataset_v6\code\make_extra_figures.py:323: UserWarning: *c* argument looks like a single numeric RGB or RGBA sequence, which should be avoided as value-mapping will have precedence in case its length matches with *x* & *y*.  Please use the *color* keyword-argument or provide a 2D array with a single row if you intend to specify the same RGB or RGBA value for all points.
+  ax.scatter(burst.t, range(len(burst)), c=PURPLE, s=60, zorder=3)
+saved fig14_leakage_shuffle
+saved fig15_robustness_caps
+50 roots for resolution sweep
+  10/50 roots done
+  20/50 roots done
+  30/50 roots done
+  40/50 roots done
+  50/50 roots done
+saved fig16_ela_resolution
+saved fig17_pipeline
+saved fig18_qualitative
+saved fig19_review_examples
+extra figures done -> D:\sem-5 projects\computer vision\dataset\paper_figures
